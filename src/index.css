@@ -1,0 +1,56 @@
+:root {
+  --yellow:  #FCF6BD;
+  --green:   #D0F4DE;
+  --pink:    #FEC8C3;
+  --blue:    #A9DEF9;
+  --hot-pink:#FF99CB;
+  --lavender:#E4C1F9;
+
+  --text:       #4a3f52;
+  --text-light: #7a6e82;
+  --heading:    #2e2535;
+  --bg:         #fffdf9;
+  --card-shadow: 0 4px 24px rgba(74, 63, 82, 0.08);
+
+  --font-brand:  'Dancing Script', cursive;
+  --font-serif:  'Lora', serif;
+  --font-sans:   'Inter', system-ui, sans-serif;
+
+  font: 17px/1.6 var(--font-sans);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  color: var(--heading);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
