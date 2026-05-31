@@ -140,7 +140,7 @@ export default function App() {
       <section className="section about" id="about">
         <div className="about-inner">
           <div className="about-img-wrap">
-            <img src="./assets/IMG_7599.jpeg" alt="Siún" />
+            <img src="./assets/IMG_7599.jpg" alt="Siún" />
           </div>
           <div className="about-text">
             <p className="section-label">About</p>
