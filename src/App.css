@@ -372,14 +372,6 @@
   50%       { opacity: 0.55; }
 }
 
-@media (max-width: 480px) {
-  .ig-feed-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .ig-feed-grid .ig-feed-tile:last-child {
-    display: none;
-  }
-}
 
 /* Setup notice (shown when feed ID is missing) */
 .ig-setup-notice {

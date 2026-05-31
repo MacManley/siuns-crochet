@@ -17,25 +17,30 @@ const products = [
 
 const PLACEHOLDER_COLOURS = ['#FCF6BD', '#D0F4DE', '#FEC8C3', '#A9DEF9', '#FF99CB', '#E4C1F9']
 
-function InstagramFeed({ feedId }) {
+// Start the fetch immediately at module load — before React even mounts,
+// so by the time the user scrolls down the request is already in flight.
+const feedPromise = BEHOLD_FEED_ID
+  ? fetch(`https://feeds.behold.so/${BEHOLD_FEED_ID}`)
+      .then(r => { if (!r.ok) throw new Error(); return r.json() })
+      .then(data => (Array.isArray(data) ? data : (data.posts ?? [])).slice(0, 6))
+  : Promise.resolve(null)
+
+function InstagramFeed() {
   const [posts, setPosts] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!!BEHOLD_FEED_ID)
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    if (!feedId) { setLoading(false); return }
-
-    fetch(`https://feeds.behold.so/${feedId}`)
-      .then(r => { if (!r.ok) throw new Error('Feed error'); return r.json() })
-      .then(data => {
-        const items = Array.isArray(data) ? data : (data.posts ?? [])
-        setPosts(items.slice(0, 6))
+    feedPromise
+      .then(items => {
+        if (items === null) { setLoading(false); return }
+        setPosts(items)
         setLoading(false)
       })
       .catch(() => { setError(true); setLoading(false) })
-  }, [feedId])
+  }, [])
 
-  if (error || (!feedId && !loading)) {
+  if (error || !BEHOLD_FEED_ID) {
     return (
       <div className="ig-setup-notice">
         <p>
@@ -75,7 +80,7 @@ function InstagramFeed({ feedId }) {
                 <img
                   src={src}
                   alt={post.altText || snippet || 'Instagram post'}
-                  loading="lazy"
+                  loading="eager"
                 />
                 {snippet && (
                   <span className="ig-feed-overlay">
@@ -107,7 +112,7 @@ export default function App() {
       <nav className="nav">
         <div className="nav-inner">
           <a href="#" className="nav-brand">
-            <img src="./assets/IMG_7760.jpeg" alt="Siun's Crochet logo" className="nav-logo" />
+            <img src="./assets/IMG_7760.png" alt="Siun's Crochet logo" className="nav-logo" />
             <span className="nav-name">Siun's Crochet</span>
           </a>
           <ul className="nav-links">
@@ -121,7 +126,7 @@ export default function App() {
       {/* ── Hero ── */}
       <section className="hero">
         <div className="hero-inner">
-          <img src="./assets/IMG_7760.jpeg" alt="Siun's Crochet logo" className="hero-avatar" />
+          <img src="./assets/IMG_7760.png" alt="Siun's Crochet logo" className="hero-avatar" />
           <h1 className="hero-title">Siun's Crochet</h1>
           <p className="hero-sub">Handmade with love, one stitch at a time.</p>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="hero-cta">
@@ -135,7 +140,7 @@ export default function App() {
       <section className="section about" id="about">
         <div className="about-inner">
           <div className="about-img-wrap">
-            <img src="./assets/IMG_7599.jpeg" alt="Siun crocheting" />
+            <img src="./assets/IMG_7599.jpeg" alt="Siún" />
           </div>
           <div className="about-text">
             <p className="section-label">About</p>
@@ -187,7 +192,7 @@ export default function App() {
             on Instagram. Orders are taken through DMs!
           </p>
 
-          <InstagramFeed feedId={BEHOLD_FEED_ID} />
+          <InstagramFeed />
 
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="instagram-btn">
             <InstagramIcon />
