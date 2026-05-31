@@ -1,22 +1,94 @@
+import { useState, useEffect } from 'react'
 import './App.css'
 
 const IG_URL = 'https://www.instagram.com/siuns_crochet/'
 
+// Paste your Behold feed ID here (from behold.so → your feed → "Feed ID")
+const BEHOLD_FEED_ID = '3koebaOnzczRIC905iZY'
+
 const products = [
-  { emoji: '🌸', name: 'Flowers', desc: 'Beautiful crocheted blooms — bouquets, corsages, and decorative arrangements that never wilt.', bg: '#FEC8C3' },
-  { emoji: '🧸', name: 'Animals', desc: 'Cuddly creatures — from bunnies to frogs and everything in between.', bg: '#FCF6BD' },
-  { emoji: '🍓', name: 'Food', desc: 'Adorable crocheted food — lemons, mushrooms, cookies, and more. Perfect for play or display.', bg: '#D0F4DE' },
-  { emoji: '💌', name: 'Custom Orders', desc: 'Have something special in mind? Send a message on Instagram and let\'s make it!', bg: '#E4C1F9' },
+  { emoji: '🌸', name: 'Flowers', desc: 'Beautiful crocheted blooms; bouquets, corsages, and decorative arrangements that never wilt.', bg: '#FEC8C3' },
+  { emoji: '🧸', name: 'Animals', desc: 'Cuddly creatures; from bunnies to frogs and everything in between.', bg: '#f7cc98' },
+  { emoji: '🍋', name: 'Food', desc: 'Adorable crocheted food; lemons, mushrooms, cookies, and more. Perfect for play or display.', bg: '#FCF6BD' },
+  { emoji: '🐰', name: 'Jellycat Inspired', desc: 'Jellycat-inspired designs that bring the same charm and cuteness to your home.', bg: '#D0F4DE' },
+  { emoji: '🎁', name: 'Mystery Boxes', desc: 'Unwrap the surprise with discounted mystery boxes, filled with delightful crocheted treasures!', bg: '#88c0dc' },
+  { emoji: '💌', name: 'Custom Orders', desc: "Have something special in mind? Send a message on Instagram and let's make it!", bg: '#d4c1f9' },
 ]
 
-const igTiles = [
-  { bg: '#FCF6BD', emoji: '🌼' },
-  { bg: '#D0F4DE', emoji: '🧸' },
-  { bg: '#FEC8C3', emoji: '🎀' },
-  { bg: '#A9DEF9', emoji: '🧶' },
-  { bg: '#FF99CB', emoji: '🌸' },
-  { bg: '#E4C1F9', emoji: '👜' },
-]
+const PLACEHOLDER_COLOURS = ['#FCF6BD', '#D0F4DE', '#FEC8C3', '#A9DEF9', '#FF99CB', '#E4C1F9']
+
+function InstagramFeed({ feedId }) {
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+
+  useEffect(() => {
+    if (!feedId) { setLoading(false); return }
+
+    fetch(`https://feeds.behold.so/${feedId}`)
+      .then(r => { if (!r.ok) throw new Error('Feed error'); return r.json() })
+      .then(data => {
+        const items = Array.isArray(data) ? data : (data.posts ?? [])
+        setPosts(items.slice(0, 6))
+        setLoading(false)
+      })
+      .catch(() => { setError(true); setLoading(false) })
+  }, [feedId])
+
+  if (error || (!feedId && !loading)) {
+    return (
+      <div className="ig-setup-notice">
+        <p>
+          <strong>Almost there!</strong> Go to{' '}
+          <a href="https://behold.so" target="_blank" rel="noopener noreferrer">behold.so</a>,
+          connect <strong>@siuns_crochet</strong>, create a feed, then paste
+          the Feed ID into <code>BEHOLD_FEED_ID</code> in <code>src/App.jsx</code>.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="ig-feed-grid">
+      {loading
+        ? PLACEHOLDER_COLOURS.map((bg, i) => (
+            <div key={i} className="ig-feed-tile ig-feed-tile--skeleton" style={{ background: bg }} />
+          ))
+        : posts.map(post => {
+            // sizes can be an object of URLs or objects with a url property
+            const sizeVal = post.sizes?.medium
+            const src = (typeof sizeVal === 'string' ? sizeVal : sizeVal?.url)
+              ?? post.mediaUrl
+              ?? post.thumbnailUrl
+            const caption = post.prunedCaption ?? post.caption ?? ''
+            const snippet = caption.length > 90 ? caption.slice(0, 90) + '…' : caption
+
+            return (
+              <a
+                key={post.id}
+                href={post.permalink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ig-feed-tile"
+                aria-label={caption || 'View on Instagram'}
+              >
+                <img
+                  src={src}
+                  alt={post.altText || snippet || 'Instagram post'}
+                  loading="lazy"
+                />
+                {snippet && (
+                  <span className="ig-feed-overlay">
+                    <span className="ig-feed-caption">{snippet}</span>
+                  </span>
+                )}
+              </a>
+            )
+          })
+      }
+    </div>
+  )
+}
 
 function InstagramIcon() {
   return (
@@ -51,9 +123,7 @@ export default function App() {
         <div className="hero-inner">
           <img src="/IMG_7760.jpeg" alt="" className="hero-avatar" />
           <h1 className="hero-title">Siun's Crochet</h1>
-          <p className="hero-sub">
-            Handmade with love, one stitch at a time.
-          </p>
+          <p className="hero-sub">Handmade with love, one stitch at a time.</p>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="hero-cta">
             <InstagramIcon />
             Shop on Instagram
@@ -96,7 +166,7 @@ export default function App() {
           <div className="products-grid">
             {products.map((p) => (
               <a key={p.name} href={IG_URL} target="_blank" rel="noopener noreferrer" className="product-card">
-                <div className="product-img" style={{ background: p.bg }}>{p.emoji}</div>
+                <div className="product-img" style={{ background: p.bg }}><span>{p.emoji}</span></div>
                 <div className="product-info">
                   <h3 className="product-name">{p.name}</h3>
                   <p className="product-desc">{p.desc}</p>
@@ -117,15 +187,7 @@ export default function App() {
             on Instagram. Orders are taken through DMs!
           </p>
 
-          {/* Placeholder grid — connect a real feed via behold.so or similar */}
-          <div className="instagram-grid">
-            {igTiles.map((tile, i) => (
-              <a key={i} href={IG_URL} target="_blank" rel="noopener noreferrer" className="ig-tile" style={{ background: tile.bg }}>
-                <span>{tile.emoji}</span>
-                <span className="ig-tile-overlay">View post ↗</span>
-              </a>
-            ))}
-          </div>
+          <InstagramFeed feedId={BEHOLD_FEED_ID} />
 
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="instagram-btn">
             <InstagramIcon />
