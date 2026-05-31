@@ -107,7 +107,7 @@ export default function App() {
       <nav className="nav">
         <div className="nav-inner">
           <a href="#" className="nav-brand">
-            <img src="/IMG_7760.jpeg" alt="Siun's Crochet logo" className="nav-logo" />
+            <img src="./assets/IMG_7760.jpeg" alt="Siun's Crochet logo" className="nav-logo" />
             <span className="nav-name">Siun's Crochet</span>
           </a>
           <ul className="nav-links">
@@ -121,7 +121,7 @@ export default function App() {
       {/* ── Hero ── */}
       <section className="hero">
         <div className="hero-inner">
-          <img src="/IMG_7760.jpeg" alt="" className="hero-avatar" />
+          <img src="./assets/IMG_7760.jpeg" alt="Siun's Crochet logo" className="hero-avatar" />
           <h1 className="hero-title">Siun's Crochet</h1>
           <p className="hero-sub">Handmade with love, one stitch at a time.</p>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer" className="hero-cta">
@@ -135,7 +135,7 @@ export default function App() {
       <section className="section about" id="about">
         <div className="about-inner">
           <div className="about-img-wrap">
-            <img src="/IMG_7599.jpeg" alt="Siun crocheting" />
+            <img src="./assets/IMG_7599.jpeg" alt="Siun crocheting" />
           </div>
           <div className="about-text">
             <p className="section-label">About</p>
