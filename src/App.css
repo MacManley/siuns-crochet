@@ -68,6 +68,7 @@
   background: var(--hot-pink);
   color: #fff;
   padding: 6px 16px;
+  white-space: nowrap;
 }
 
 .nav-links .nav-ig:hover {
