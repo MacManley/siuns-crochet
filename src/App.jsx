@@ -6,6 +6,8 @@ const IG_URL = 'https://www.instagram.com/siuns_crochet/'
 // Paste your Behold feed ID here (from behold.so → your feed → "Feed ID")
 const BEHOLD_FEED_ID = '3koebaOnzczRIC905iZY'
 
+const GOOGLE_CALENDAR_ID = '1f65c83b594de8f37d227af5f09b03b3813cdf3df1e6ec46bd64fe52d0d65b04@group.calendar.google.com'
+
 const products = [
   { emoji: '🌸', name: 'Flowers', desc: 'Beautiful crocheted blooms; bouquets, corsages, and decorative arrangements that never wilt.', bg: '#FEC8C3' },
   { emoji: '🧸', name: 'Animals', desc: 'Cuddly creatures; from bunnies to frogs and everything in between.', bg: '#f7cc98' },
@@ -105,6 +107,26 @@ function InstagramIcon() {
   )
 }
 
+function GoogleCalendar() {
+  if (!GOOGLE_CALENDAR_ID) {
+    console.warn('GOOGLE_CALENDAR_ID not set — calendar will not display');
+  }
+
+  const src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(GOOGLE_CALENDAR_ID)}&ctz=Europe%2FDublin&showTitle=0&showNav=1&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA`
+
+  return (
+    <div className="cal-iframe-wrap">
+      <iframe
+        src={src}
+        title="Siun's Crochet — upcoming events"
+        frameBorder="0"
+        scrolling="no"
+        className="cal-iframe"
+      />
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <>
@@ -118,6 +140,7 @@ export default function App() {
           <ul className="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#shop">Shop</a></li>
+            <li><a href="#calendar">Calendar</a></li>
             <li><a href={IG_URL} target="_blank" rel="noopener noreferrer" className="nav-ig">Instagram ↗</a></li>
           </ul>
         </div>
@@ -182,6 +205,18 @@ export default function App() {
         </div>
       </section>
 
+      {/* ── Calendar ── */}
+      <section className="section calendar" id="calendar">
+        <div className="section-inner">
+          <p className="section-label">Availability</p>
+          <h2 className="section-title">Upcoming & Events</h2>
+          <p className="cal-body">
+            Check here to see market dates, pop-ups, and when custom order slots open up.
+          </p>
+          <GoogleCalendar />
+        </div>
+      </section>
+
       {/* ── Instagram ── */}
       <section className="section instagram" id="instagram">
         <div className="instagram-inner">
@@ -207,6 +242,7 @@ export default function App() {
         <div className="footer-links">
           <a href="#about">About</a>
           <a href="#shop">Shop</a>
+          <a href="#calendar">Calendar</a>
           <a href={IG_URL} target="_blank" rel="noopener noreferrer">Instagram</a>
         </div>
         <p className="footer-copy">© {new Date().getFullYear()} Siun's Crochet. Made with 🧶 and love.</p>
